@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<div id="header">
+			<table border = 1 width="100%">
+				<tr valign="top">
+					<td width ="70%" align="left">
+						<h1>SNVA Technologies</h1>
+					</td>
+					<td width ="30%" align="center">
+						GitHub Linkedin Facebook
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="output">
+			<table border = 1 width="100%">
+				<tr valign="top">
+					<td width ="100%" align="left">
+						<span id="searchBar">
+							User Name: <input type="text" id = "username"> <button onclick="fetchUser()">get user</button>
+						</span>
+					</td>
+				</tr>
+			</table>
+			<table border = 1 width="100%">
+				<tr valign="top">
+					<td width="20%" >
+						<img id="image" src=""/>
+					</td>
+					<td width="80%"  align="center">
+						<div id="followers"></div>
+						<table id="followerList" border = 1 width="100%">
+						</table>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<script type="text/javascript">
+			function fetchUser()
+			{
+				let user = document.getElementById('username').value;
+				if(!user)
+				{
+					alert("user is blank or undefined");
+				}
+				else 
+				{
+					fetch('https://api.github.com/users/' + user)
+					.then(response => response.json())
+					.then(json => 
+						{
+							document.getElementById('followers').innerHTML = '<span> followers : ' + json.followers + ' </span>';
+							document.getElementById('image').setAttribute('src', json.avatar_url);
+							
+							fetch('https://api.github.com/users/' + user + '/followers')
+							.then(response => response.json())
+							.then(jsonList => 
+								{
+									let followerList = "<tr><td width=100px>login name</td><td width=100px>picture</td><td>link to profile</td></tr>"
+									for(let i = 0; i < jsonList.length; i++)
+									{
+										followerList = followerList + "<tr><td>" + jsonList[i].login +"</td><td><img id='image' width='80px' src=" + jsonList[i].avatar_url + "/></td><td>" + jsonList[i].url + "</td></tr>"
+									}
+									document.getElementById('followerList').innerHTML = followerList;
+								})
+						})
+				}
+			}
+		</script>
+		
+	</body>
+</html>
